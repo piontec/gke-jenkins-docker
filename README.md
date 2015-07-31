@@ -2,6 +2,8 @@ This project is based on an idea and code used in [jenkins packer](https://githu
 project by [evandbrown](https://github.com/evandbrown) - big thanks for sharing this! I wanted to make it more elastic, self-contained and production ready ("more ready", not "totaly ready").
 Nevertheless, this is still entirely based on Google Cloud Platform, Container Service and Container Registry.
 
+The aim of this project is to setup from zero a jenkins swarm, which can build and store in a private repo docker images based on Dockerfiles kept in git repository. After completing the tutorial below, you will be able to run a complete CI/CD platform based on docker, kubernetes and jenkins.
+
 If you didn't read the description of the original project, you should probably do so now. Here's what's different in here:
   - I assumed, that using publicly available, constantly changing docker images for a production deployment is a no-go. Hence, 
     here a private docker repository is easily set up and initial images are created in-house to make sure that they are exactly 
