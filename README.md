@@ -72,5 +72,52 @@ Now we will configure, build and push to the private registry necessary docker i
 1. Add a user for the slave to aythenticate. Go to "Manage Jenkins", "Manage Users" and create a user named "slave" with password exactly the same as in your config file (this project's config file, you chosen the password in step 2.). Again, go to security and in the permissions matrix add user "slave", then select for it the following permissions: in section "Overall" select "read" and in "Slave" check everything. Click "Save". Now your jenkins is secured and slave should be connected and ready. Enjoy your jenkins!
 1. If you want your jenkins to be always in english, even when your browser sends other languages in headers, go to "Manage Jenkins", "ConfigureSystem" and under "Default Language" enter "en_US" and check the checkbox below.
 
-# 6. Clean up #
+# 6. Build your own docker project! #
+OK, jenkins is ready, let's build something!
+1. Create a new docker repo for yourself, for example on [bitbucket.org](https://bitbucket.org/). In this repository create a simple file named "Dockerfile", with some simple build steps like:
+```
+FROM ubuntu:trusty
+MAINTAINER anon@no.ne
+
+RUN apt-get update \
+	&& apt-get install -y curl \
+	&& rm -rf /var/lib/apt/lists/*
+
+RUN touch /tmp/tubylem-tony-halik
+```
+1. In jenkins select "New Item", then give it a name and select "freestyle project". Click "OK". 
+1. Prepare a public/private key pair that allows for git access to the repository with the Dockerfile. Here we will use a jenkins' master private key generated during project setup (and used for keeping the configuration of jenkins in git). You can find that key in "bootstrap/certs/id_rsa". Grab "id_rsa.pub" and add it as am access key for the git repository (on bitbucket.org you may add this key as a [deployment key](https://confluence.atlassian.com/display/BITBUCKET/Use+deployment+keys). If you want to use other key pair, you need to add the private key in jenkins' "Credentials" section.
+1. In build settings check "Restrict where this project can be run" and enter "jenkins-dind-slave".
+1. In "Source Code Management" select git, enter repo URL and if you want to use existing jenkins' key click Credentials "Add", then select "SSH username with private key", change username to "git" and then select "From the Jenkins master ~/.ssh". Click "add" and select newly created credentials (if they don't show up, click "Save" and reload the configuration page).
+1. Under "build" click "Add build step" and select "Execute shell". Enter a script simillar to:
+```
+#!/bin/bash
+
+cd ubuntu-mono/
+PROJECT="<PROJECT>"
+IMAGE="docker-image-mono"
+REG="eu.gcr.io/<PROJECT>"
+
+GC=${GIT_COMMIT:0:8}
+LATEST="${REG}/${IMAGE}:latest"
+COMMIT="${REG}/${IMAGE}:master-${GC}"
+
+docker build --pull -t ${LATEST} .
+docker tag -f ${LATEST} ${COMMIT}
+
+gcloud docker push ${LATEST}
+gcloud docker push ${COMMIT}
+
+docker rmi ${LATEST}
+docker rmi ${COMMIT}
+
+```
+Save the config. Remember to replace <PROJECT> with your own project name. This script will checkout the repository, build an image according to the Dockerfile, tag it and push into your private docker GCR repository. That's it! Now you can just run the images.
+1. Oh, wait. There's just one more cool thing you can setup. If you use the created docker images to run pods on Container Engine, you can setup a post-build script in jenkins to auto roll updates after a new image is build. This way you get a Continous Deployment in a one line long script! Just add something like:
+```
+kubectl rolling-update rc-my-service --image=eu.gcr.io/<PROJECT>/docker-test-image:latest
+```
+
+
+# 7. Clean up #
 Just run ```./all-down.sh``` and cluster and virtual machines will be deleted. *Please note* that this script won't remove your docker images in GCR and jenkins master's persistant GCE disk
