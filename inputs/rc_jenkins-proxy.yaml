@@ -1,0 +1,51 @@
+---
+kind: ReplicationController
+apiVersion: v1
+metadata:
+  name: rc-jenkins-proxy
+  labels:
+    name: nginx
+    role: jenkins-proxy
+    env: devenv
+spec:
+  replicas: 1
+  selector:
+    name: nginx
+    role: jenkins-proxy
+    env: devenv
+  template:
+    metadata:
+      name: po-jenkins-proxy
+      labels:
+        name: nginx
+        role: jenkins-proxy
+        env: devenv
+    spec:
+      containers:
+      - name: jenkins-proxy
+        image: gcr.io/cloud-solutions-images/nginx-ssl-proxy:latest
+        command:
+        - /bin/bash
+        - /usr/bin/start.sh
+        env:
+        - name: SERVICE_HOST_ENV_NAME
+          value: SRV_JENKINS_FRONTEND_SERVICE_HOST
+        - name: SERVICE_PORT_ENV_NAME
+          value: SRV_JENKINS_FRONTEND_SERVICE_PORT_UI
+        - name: ENABLE_SSL
+          value: 'true'
+        - name: ENABLE_BASIC_AUTH
+          value: 'false'
+        ports:
+        - name: jen-proxy-http
+          containerPort: 80
+        - name: jen-proxy-https
+          containerPort: 443
+        volumeMounts:
+        - name: secrets
+          mountPath: /etc/secrets
+          readOnly: true
+      volumes:
+      - name: secrets
+        secret:
+          secretName: secrets-jenkins-proxy

@@ -1,0 +1,48 @@
+---
+kind: ReplicationController
+apiVersion: v1
+metadata:
+  name: rc-jenkins-master
+  labels:
+    name: jenkins
+    role: master
+    env: devenv
+spec:
+  replicas: 1
+  selector:
+    name: jenkins
+    role: master
+    env: devenv
+  template:
+    metadata:
+      name: po-jenkins-master
+      labels:
+        name: jenkins
+        role: master
+        env: devenv
+    spec:
+      containers:
+      - name: jenkins-master
+        image: GS_IMAGE_BUCKET/jenkins-master:latest
+        command:
+        - /usr/local/bin/start.sh
+        ports:
+        - name: jenkins-m-http
+          containerPort: 8080
+        - name: jenkins-m-disco
+          containerPort: 50000
+        volumeMounts:
+        - name: secrets
+          mountPath: /etc/secrets/
+          readOnly: true
+        - name: jenkins-master-home
+          mountPath: /var/jenkins_home
+      volumes:
+      - name: secrets
+        secret:
+          secretName: secrets-jenkins-master
+      - name: jenkins-master-home
+        gcePersistentDisk:
+          pdName: jenkins-master-home
+          fsType: ext4
+

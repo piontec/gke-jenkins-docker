@@ -1,0 +1,5 @@
+[user]
+        email = jenkins@no.ne
+        name = jenikns
+[push]
+        default = simple

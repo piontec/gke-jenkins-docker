@@ -1,0 +1,64 @@
+---
+kind: ReplicationController
+apiVersion: v1
+metadata:
+  name: rc-jenkins-dind-slave
+  labels:
+    name: jenkins-dind-slave
+    role: slave
+    labels: docker
+    env: devenv
+spec:
+  replicas: 1
+  selector:
+    name: jenkins-dind-slave
+    role: slave
+    labels: docker
+    env: devenv
+  template:
+    metadata:
+      name: po-jenkins-dind-slave
+      labels:
+        name: jenkins-dind-slave
+        role: slave
+        labels: docker
+        env: devenv
+    spec:
+      containers:
+      - name: jenkins-dind-slave
+        image: GS_IMAGE_BUCKET/jenkins-dind-slave:latest
+        command:
+        - sh
+        - -c
+        - /usr/local/bin/jenkins-docker-supervisor.sh -master http://$SRV_JENKINS_FRONTEND_SERVICE_HOST:$SRV_JENKINS_FRONTEND_SERVICE_PORT_UI
+          -tunnel $SRV_JENKINS_FRONTEND_SERVICE_HOST:$SRV_JENKINS_FRONTEND_SERVICE_PORT_DISCOVERY -executors 1 -labels jenkins-dind-slave
+          -username <JSU> -password <JSP>
+        ports:
+        - name: docker-api
+          containerPort: 4342
+        env:
+        - name: PORT
+          value: "4342"
+        volumeMounts:
+          - mountPath: /var/lib/docker
+            name: docker-lib
+          - mountPath: /var/run/docker.sock
+            name: docker-sock
+          - mountPath: /usr/bin/docker
+            name: docker-bin
+          - mountPath: /tmp
+            name: docker-tmp
+      volumes:
+        - name: docker-lib
+          hostPath:
+            path: /var/lib/docker
+        - name: docker-sock
+          hostPath:
+            path: /var/run/docker.sock
+        - name: docker-bin
+          hostPath:
+            path: /usr/bin/docker
+        - name: docker-tmp
+          hostPath:
+            path: /tmp
+        
