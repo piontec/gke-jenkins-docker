@@ -19,5 +19,5 @@ function error_exit
     exit 1
 }
 
-proxy=`kubectl describe service/nginx-ssl-proxy 2>/dev/null | grep 'LoadBalancer\ Ingress' | cut -f2`
+proxy=`kubectl describe service/srv-jenkins-proxy 2>/dev/null | grep 'LoadBalancer\ Ingress' | cut -f2`
 echo "Jenkins SSL proxy available under https://${proxy}"
