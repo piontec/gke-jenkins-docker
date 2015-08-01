@@ -1,7 +1,6 @@
 #!/bin/bash
 
 ./d_11_jenkins_down_net.sh
-./d_10_jenkins_down.sh
 ./d_00_cluster_down.sh
 
 echo "***All scripts completed!***"
