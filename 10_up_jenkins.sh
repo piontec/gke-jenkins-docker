@@ -5,8 +5,9 @@ source lib/common.sh
 load_config
 
 # Deploy secrets, replication controllers, and services
-echo -n "Deploying services, controllers, and secrets to Google Container Engine..."
+echo "Creating persistent disk for jenkins master"
 gcloud compute disks create jenkins-master-home --size 10GB || true
+echo -n "Deploying services, controllers, and secrets to Google Container Engine..."
 deploy ${WF}/secrets_jenkins-proxy.yaml
 deploy ${WF}/secrets_jenkins-master.yaml
 deploy ${WF}/service_jenkins-proxy.yaml

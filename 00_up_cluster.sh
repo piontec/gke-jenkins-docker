@@ -5,6 +5,9 @@ set -e
 source lib/common.sh 
 load_config
 
+gcloud config set project ${PROJECT}
+gcloud config set container/cluster ${CLUSTER_NAME}
+
 if [ ! -d ${WF} ]; then
     mkdir ${WF}
 fi
@@ -49,13 +52,5 @@ echo "done."
 
 # Wait for API server to become avilable
 for i in {1..5}; do kubectl get pods &>/dev/null && break || sleep 2; done
-
-echo -n "Tagging nodes..."
-gcloud compute instances list \
-  -r "^gke-${CLUSTER_NAME}.*node.*$" \
-  | tail -n +2 \
-  | cut -f1 -d' ' \
-  | xargs -L 1 -I '{}' gcloud compute instances add-tags {} --zone ${ZONE} --tags gke-${CLUSTER_NAME}-node &>/dev/null || error_exit "Error adding tags to nodes"
-echo "done."
 
 echo "Cluster is ready"

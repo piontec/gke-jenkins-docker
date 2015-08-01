@@ -17,4 +17,8 @@ function deploy
    kubectl create -f $1 >/dev/null || error_exit "Error deploying ${1}"
 }
 
+function delete
+{
+        kubectl delete -f $1 >/dev/null || echo "Error deleteing ${1}, continuing"
+}
 
