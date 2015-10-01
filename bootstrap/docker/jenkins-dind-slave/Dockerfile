@@ -44,6 +44,11 @@ RUN apt-get install -y -qq --no-install-recommends wget unzip python openjdk-7-j
   && chown -R jenkins-agent google-cloud-sdk
 ENV PATH /home/jenkins-agent/google-cloud-sdk/bin:$PATH
 
+# Install docker-compose form source
+RUN apt-get install -y -qq --no-install-recomends python-dev libxml2-dev libxslt-dev
+RUN curl https://bootstrap.pypa.io/ez_setup.py -o - | python
+RUN cd /tmp && git clone https://github.com/therealjessesanford/compose.git && cd compose && python setup.py install && cd .. && rm -rf compose
+
 # cleanup
 RUN apt-get clean
 RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*

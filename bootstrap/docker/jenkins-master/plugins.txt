@@ -10,3 +10,4 @@ google-source-plugin:0.1
 scm-sync-configuration:0.0.8
 locale:1.2
 token-macro:1.10
+credentials-binding:1.5
