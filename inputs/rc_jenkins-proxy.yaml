@@ -23,15 +23,19 @@ spec:
     spec:
       containers:
       - name: jenkins-proxy
-        image: gcr.io/cloud-solutions-images/nginx-ssl-proxy:latest
+        image: us.gcr.io/stn-jenkins/stn_nginx_ssl_proxy:latest
         command:
         - /bin/bash
-        - /usr/bin/start.sh
+        - /usr/src/start.sh
         env:
         - name: SERVICE_HOST_ENV_NAME
           value: SRV_JENKINS_FRONTEND_SERVICE_HOST
         - name: SERVICE_PORT_ENV_NAME
           value: SRV_JENKINS_FRONTEND_SERVICE_PORT_UI
+        - name: SERVICE_HOST_ENV_NAME2
+          value: SRV_JENKINS_FRONTEND_SERVICE_HOST
+        - name: SERVICE_PORT_ENV_NAME2
+          value: SRV_JENKINS_FRONTEND_SERVICE_PORT_WS
         - name: ENABLE_SSL
           value: 'true'
         - name: ENABLE_BASIC_AUTH
@@ -41,6 +45,8 @@ spec:
           containerPort: 80
         - name: jen-proxy-https
           containerPort: 443
+        - name: jen-proxy-ws
+          containerPort: 8888
         volumeMounts:
         - name: secrets
           mountPath: /etc/secrets

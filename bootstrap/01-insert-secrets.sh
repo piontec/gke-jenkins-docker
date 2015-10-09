@@ -10,9 +10,9 @@ DH=dhparam.pem
 CERTS_DIR=certs
 
 echo "Encoding secrets into kubernetes secrets file..."
-crt=`base64 -w 0 ${CERTS_DIR}/${CERT}.crt`
-key=`base64 -w 0 ${CERTS_DIR}/${CERT}.key`
-dh=`base64 -w 0 ${CERTS_DIR}/dhparam.pem`
+crt=`base64 -i ${CERTS_DIR}/${CERT}.crt`
+key=`base64 -i ${CERTS_DIR}/${CERT}.key`
+dh=`base64 -i ${CERTS_DIR}/dhparam.pem`
 
 echo "Creating secrets file from template..."
 

@@ -17,6 +17,11 @@ spec:
     port: 50000
     targetPort: jenkins-m-disco
     protocol: TCP
+  - name: ws
+    port: 8888
+    targetPort: jenkins-m-ws
+    targetPort: jenkins-m-ws
+    protocol: TCP
   createExternalLoadBalancer: false
   selector:
     name: jenkins
