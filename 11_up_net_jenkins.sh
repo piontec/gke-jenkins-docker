@@ -13,5 +13,5 @@ echo $TAG
 ## Allow kubernetes nodes to communicate between eachother on TCP 50000 and 8080
 gcloud compute firewall-rules create ${CLUSTER_NAME}-jenkins-swarm-internal --allow TCP:50000,TCP:8080 --source-tags ${TAG} --target-tags ${TAG} &>/dev/null || error_exit "Error creating internal firewall rule"
 ## Allow public access to TCP 80 and 443
-gcloud compute firewall-rules create ${CLUSTER_NAME}-jenkins-web-public --allow TCP:80,TCP:443 --source-ranges 0.0.0.0/0 --target-tags ${TAG} &>/dev/null || error_exit "Error creating public firewall rule"
+gcloud compute firewall-rules create ${CLUSTER_NAME}-jenkins-web-public --allow TCP:80,TCP:443,TCP:8888 --source-ranges 0.0.0.0/0 --target-tags ${TAG} &>/dev/null || error_exit "Error creating public firewall rule"
 echo "done."

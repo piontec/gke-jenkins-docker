@@ -6,17 +6,19 @@ RUN apt-get install -y apt-transport-https
 # Add the repository to your APT sources
 RUN echo deb https://get.docker.com/ubuntu docker main > /etc/apt/sources.list.d/docker.list
 # Then import the repository key
-#RUN apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 36A1D7869245C8950F966E92D8576A8BA88D21E9
 RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 36A1D7869245C8950F966E92D8576A8BA88D21E9
 
 # Let's start with some basic stuff.
 RUN apt-get update -qq && apt-get install -qqy \
     ca-certificates \
     curl \
+    vim \
+    telnet \
     lxc-docker \
     iptables \
     supervisor \
-    default-jre
+    default-jre \
+    jq
 
 RUN echo 'DOCKER_OPTS="-H tcp://0.0.0.0:4243 -H unix:///var/run/docker.sock"' > /etc/default/docker
 EXPOSE 4243
@@ -44,7 +46,7 @@ RUN apt-get install -y -qq --no-install-recommends wget unzip python openjdk-7-j
   && chown -R jenkins-agent google-cloud-sdk
 ENV PATH /home/jenkins-agent/google-cloud-sdk/bin:$PATH
 
-# Install docker-compose form source
+# Install docker-compose form source (until 1.5 is released)
 RUN apt-get install -y -qq --no-install-recommends python-dev libxml2-dev libxslt-dev
 RUN curl https://bootstrap.pypa.io/ez_setup.py -o - | python
 RUN cd /tmp && git clone https://github.com/therealjessesanford/compose.git && cd compose && python setup.py install && cd .. && rm -rf compose

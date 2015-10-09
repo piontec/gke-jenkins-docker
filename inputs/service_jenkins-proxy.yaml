@@ -18,6 +18,10 @@ spec:
     port: 80
     targetPort: jen-proxy-http
     protocol: TCP
+  - name: ws
+    port: 8888
+    targetPort: jen-proxy-ws
+    protocol: TCP
   selector:
     name: nginx
     role: jenkins-proxy

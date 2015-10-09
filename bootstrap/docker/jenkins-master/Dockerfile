@@ -29,7 +29,7 @@ RUN chown -R jenkins:jenkins /usr/share/jenkins/ref
 
 # Install gcloud
 ENV CLOUDSDK_PYTHON_SITEPACKAGES 1
-RUN apt-get install -y -qq --no-install-recommends wget unzip python openssh-client \
+RUN apt-get update && apt-get install -y -qq --no-install-recommends vim telnet wget unzip python openssh-client  \
   && apt-get clean \
   && cd /usr/local/bin \
   && wget https://dl.google.com/dl/cloudsdk/release/google-cloud-sdk.zip && unzip google-cloud-sdk.zip && rm google-cloud-sdk.zip \
