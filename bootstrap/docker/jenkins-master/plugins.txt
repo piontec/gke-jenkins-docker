@@ -13,3 +13,7 @@ token-macro:1.10
 credentials-binding:1.5
 multiple-scms:0.5
 throttle-concurrents:1.8.4
+envinject:1.92.1
+preSCMbuildstep:0.3
+parameterized-trigger:2.29
+vncviewer:1.5
