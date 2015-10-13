@@ -28,9 +28,9 @@ if [ ! -f ${CERTS_DIR}/${KH} ]; then
 fi
 
 echo "Encoding..."
-key=`base64 -w 0 ${CERTS_DIR}/${KEY}`
-keypub=`base64 -w 0 ${CERTS_DIR}/${KEY}.pub`
-kh=`base64 -w 0 ${CERTS_DIR}/${KH}`
+key=`base64 -i ${CERTS_DIR}/${KEY}`
+keypub=`base64 -i ${CERTS_DIR}/${KEY}.pub`
+kh=`base64 -i ${CERTS_DIR}/${KH}`
 
 echo "Creating secrets file from template..."
 
